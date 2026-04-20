@@ -1,4 +1,5 @@
-﻿Option Explicit
+﻿' Mod3Main.bas
+Option Explicit
 
 '================================================================================
 ' PONTO DE ENTRADA PRINCIPAL
@@ -97,8 +98,178 @@ Public Sub PadronizarDocumentoMain()
     On Error GoTo CriticalErrorHandler
     ' ---------------------------------------------------------------------------
 
-'================================================================================
-' CONCLUIR - Copia ementa, salva e fecha com seguranca
+    ' ==========================================================================
+    ' PIPELINE DE FORMATACAO (DUPLA PASSAGEM OTIMIZADA)
+    ' ==========================================================================
+
+    LogMessage "=== PIPELINE DE FORMATACAO (2 PASSAGENS) ===", LOG_LEVEL_INFO
+
+    ' Constroi cache de paragrafos (inclui identificacao de estrutura)
+    IncrementProgress "Indexando paragrafos"
+    BuildParagraphCache doc
+
+    ' Executa formatacao em 2 passagens para garantir estabilidade
+    ' Segunda passagem so executa se primeira fez alteracoes (flag dirty)
+    Dim pipelinePass As Integer
+    documentDirty = True  ' Primeira passagem sempre executa
+
+    For pipelinePass = 1 To 2
+        ' Pula segunda passagem se documento nao foi modificado
+        If pipelinePass = 2 And Not documentDirty Then
+            LogMessage "=== PASSAGEM 2 IGNORADA (sem alteracoes na passagem 1) ===", LOG_LEVEL_INFO
+            Exit For
+        End If
+
+        documentDirty = False  ' Reset flag antes de cada passagem
+        LogMessage "=== PASSAGEM " & pipelinePass & " DE 2 ===", LOG_LEVEL_INFO
+
+        ' Formata documento
+        IncrementProgress "Formatando documento (" & pipelinePass & " passagem)"
+        If Not PreviousFormatting(doc) Then
+            GoTo CleanUp
+        End If
+
+        ' Restaura imagens apos formatacoes
+        IncrementProgress "Restaurando imagens (" & pipelinePass & " passagem)"
+        If Not RestoreAllImages(doc) Then
+            LogMessage "Aviso: Algumas imagens podem ter sido afetadas durante o processamento", LOG_LEVEL_WARNING
+        End If
+    Next pipelinePass
+
+    ' Remove linhas em branco extras e aplica ajustes finais
+    IncrementProgress "Removendo linhas em branco extras"
+    RemoverLinhasEmBrancoExtras doc
+
+    ' Restaura formatacoes de lista apos formatacoes
+    IncrementProgress "Restaurando listas"
+    If Not RestoreListFormats(doc) Then
+        LogMessage "Aviso: Algumas formatacoes de lista podem nao ter sido restauradas", LOG_LEVEL_WARNING
+    End If
+
+    ' Formata paragrafos iniciados com numero (aplica recuo de lista numerada)
+    IncrementProgress "Ajustando numeracao"
+    If Not FormatNumberedParagraphsIndent(doc) Then
+        LogMessage "Aviso: Falha ao formatar recuos de paragrafos numerados", LOG_LEVEL_WARNING
+    End If
+
+    ' Formata paragrafos iniciados com marcador (aplica recuo de lista com marcadores)
+    IncrementProgress "Ajustando marcadores"
+    If Not FormatBulletedParagraphsIndent(doc) Then
+        LogMessage "Aviso: Falha ao formatar recuos de paragrafos com marcadores", LOG_LEVEL_WARNING
+    End If
+
+    ' Formata recuos de paragrafos com imagens (zera recuo a esquerda)
+    IncrementProgress "Ajustando layout"
+    If Not FormatImageParagraphsIndents(doc) Then
+        LogMessage "Aviso: Falha ao formatar recuos de imagens", LOG_LEVEL_WARNING
+    End If
+
+    ' Centraliza imagem entre 5a e 7a linha apos Plenario
+    IncrementProgress "Centralizando elementos"
+    If Not CenterImageAfterPlenario(doc) Then
+        LogMessage "Aviso: Falha ao centralizar imagem apos Plenario", LOG_LEVEL_WARNING
+    End If
+
+    ' Restaura configuracoes de visualizacao originais (exceto zoom)
+    IncrementProgress "Restaurando visualizacao"
+    If Not RestoreViewSettings(doc) Then
+        LogMessage "Aviso: Algumas configuracoes de visualizacao podem nao ter sido restauradas", LOG_LEVEL_WARNING
+    End If
+
+    If formattingCancelled Then
+        GoTo CleanUp
+    End If
+
+    IncrementProgress "Finalizando"
+    LogMessage "Documento padronizado com sucesso", LOG_LEVEL_INFO
+
+    ' Calcula tempo de execucao em segundos
+    Dim execSeconds As Long
+    execSeconds = CLng((Now - executionStartTime) * 86400)
+
+    ' Mostra mensagem final na barra de status
+    Application.StatusBar = "Padronizacao concluida em " & execSeconds & "s, com " & errorCount & " erros e " & warningCount & " avisos! (chainsaw)"
+
+CleanUp:
+    ' ---------------------------------------------------------------------------
+    ' FIM DO GRUPO DE DESFAZER - SEMPRE fecha o UndoRecord
+    ' ---------------------------------------------------------------------------
+    On Error Resume Next
+    If undoGroupEnabled Then
+        Application.UndoRecord.EndCustomRecord
+        undoGroupEnabled = False
+        LogMessage "UndoRecord finalizado com sucesso", LOG_LEVEL_INFO
+    End If
+    Err.Clear
+    On Error GoTo 0
+    ' ---------------------------------------------------------------------------
+
+    ClearParagraphCache ' Limpa cache de paragrafos
+    SafeCleanup
+    CleanupImageProtection ' Nova funcao para limpar variaveis de protecao de imagens
+    CleanupViewSettings    ' Nova funcao para limpar variaveis de configuracoes de visualizacao
+
+    ' Restaura estado da aplicacao preservando a StatusBar (mantem mensagem final)
+    If Not SetAppState(True, "", True) Then
+        LogMessage "Falha ao restaurar estado da aplicacao", LOG_LEVEL_WARNING
+    End If
+
+    SafeFinalizeLogging
+
+    ' Mensagem de conclusao desativada - informacoes exibidas apenas na StatusBar
+    ' If Not formattingCancelled Then
+    '     Dim executionTimeText As String
+    '     Dim duration As Double
+    '     duration = (Now - executionStartTime) * 86400
+    '     If duration < 60 Then
+    '         executionTimeText = Format(duration, "0.0") & " segundos"
+    '     ElseIf duration < 3600 Then
+    '         executionTimeText = Format(Int(duration / 60), "0") & " minuto(s) e " & Format(duration Mod 60, "00") & " segundo(s)"
+    '     Else
+    '         executionTimeText = Format(Int(duration / 3600), "0") & " hora(s) e " & Format(Int((duration Mod 3600) / 60), "00") & " minuto(s)"
+    '     End If
+    '     Dim statusMsg As String
+    '     If errorCount > 0 Then
+    '         statusMsg = vbCrLf & vbCrLf & "[!] ATENCAO: " & errorCount & " erro(s) detectado(s) durante a execucao." & vbCrLf & _
+    '                    "   Verifique o log para mais detalhes."
+    '     ElseIf warningCount > 0 Then
+    '         statusMsg = vbCrLf & vbCrLf & "[i] INFORMACAO: " & warningCount & " aviso(s) registrado(s) durante a execucao." & vbCrLf & _
+    '                    "   Verifique o log para mais detalhes."
+    '     Else
+    '         statusMsg = vbCrLf & vbCrLf & "[OK] Nenhum erro ou aviso detectado durante a execucao."
+    '     End If
+    '     MsgBox "[OK] Processamento concluido com sucesso em " & executionTimeText & "!" & vbCrLf & vbCrLf & _
+    '            "[DIR] Backup criado em:" & vbCrLf & _
+    '            "   " & IIf(backupFilePath <> "", backupFilePath, GetChainsawBackupsPath()) & vbCrLf & vbCrLf & _
+    '            "[LOG] Log salvo em:" & vbCrLf & _
+    '            "   " & logFilePath & statusMsg, _
+    '            vbInformation, "CHAINSAW - Padronizacao Concluida"
+    ' End If
+
+    ' Posiciona cursor no inicio do documento
+    On Error Resume Next
+    If Not doc Is Nothing Then
+        doc.Range(0, 0).Select
+    End If
+    On Error GoTo 0
+
+    Exit Sub
+
+CriticalErrorHandler:
+    Dim errDesc As String
+    errDesc = "ERRO CRITICO #" & Err.Number & ": " & Err.Description & _
+              " em " & Err.Source & " (Linha: " & Erl & ")"
+
+    LogMessage errDesc, LOG_LEVEL_ERROR
+    Application.StatusBar = "Erro - verificar logs"
+
+    ShowUserFriendlyError Err.Number, Err.Description
+    EmergencyRecovery
+
+    ' CRITICO: Garante fechamento do UndoRecord mesmo em erro
+    GoTo CleanUp
+End Sub
+
 '================================================================================
 ' FUNCOES PUBLICAS DE ACESSO AOS ELEMENTOS ESTRUTURAIS
 '================================================================================

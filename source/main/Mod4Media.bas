@@ -1,4 +1,5 @@
-﻿Option Explicit
+﻿' Mod4Media.bas
+Option Explicit
 
 '================================================================================
 ' GERENCIAMENTO DE CAMINHO DA IMAGEM DE CABECALHO

@@ -1,4 +1,5 @@
-﻿Option Explicit
+﻿' Mod6System.bas
+Option Explicit
 
 '================================================================================
 ' TRATAMENTO AMIGAVEL DE ERROS

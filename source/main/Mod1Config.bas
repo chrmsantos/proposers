@@ -1,4 +1,5 @@
-﻿Option Explicit
+﻿' Mod1Config.bas
+Option Explicit
 
 '================================================================================
 ' CONSTANTES DO WORD

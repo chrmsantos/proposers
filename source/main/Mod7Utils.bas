@@ -1,4 +1,5 @@
-﻿Option Explicit
+﻿' Mod7Utils.bas
+Option Explicit
 
 '================================================================================
 ' FUNCOES AUXILIARES DE LIMPEZA DE TEXTO
