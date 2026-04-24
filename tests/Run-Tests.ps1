@@ -1,4 +1,4 @@
-<# Runner para executar testes Pester do projeto CHAINSAW
+<# Runner para executar testes Pester do projeto Z7_STDPROPOSERS
    - Importa Pester
    - Executa suites de testes
 #>

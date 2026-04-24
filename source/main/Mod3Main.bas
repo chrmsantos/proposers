@@ -87,7 +87,7 @@ Public Sub PadronizarDocumentoMain()
     ' INICIO DO GRUPO DE DESFAZER (UndoRecord) - melhor esforco
     ' ---------------------------------------------------------------------------
     On Error Resume Next
-    Application.UndoRecord.StartCustomRecord "CHAINSAW - Padronizacao"
+    Application.UndoRecord.StartCustomRecord "Z7_STDPROPOSERS - Padronizacao"
     If Err.Number = 0 Then
         undoGroupEnabled = True
         LogMessage "UndoRecord iniciado", LOG_LEVEL_INFO
@@ -188,7 +188,7 @@ Public Sub PadronizarDocumentoMain()
     execSeconds = CLng((Now - executionStartTime) * 86400)
 
     ' Mostra mensagem final na barra de status
-    Application.StatusBar = "Padronizacao concluida em " & execSeconds & "s, com " & errorCount & " erros e " & warningCount & " avisos! (chainsaw)"
+    Application.StatusBar = "Padronizacao concluida em " & execSeconds & "s, com " & errorCount & " erros e " & warningCount & " avisos! (z7_stdproposers)"
 
 CleanUp:
     ' ---------------------------------------------------------------------------
@@ -240,10 +240,10 @@ CleanUp:
     '     End If
     '     MsgBox "[OK] Processamento concluido com sucesso em " & executionTimeText & "!" & vbCrLf & vbCrLf & _
     '            "[DIR] Backup criado em:" & vbCrLf & _
-    '            "   " & IIf(backupFilePath <> "", backupFilePath, GetChainsawBackupsPath()) & vbCrLf & vbCrLf & _
+    '            "   " & IIf(backupFilePath <> "", backupFilePath, GetZ7StdProposersBackupsPath()) & vbCrLf & vbCrLf & _
     '            "[LOG] Log salvo em:" & vbCrLf & _
     '            "   " & logFilePath & statusMsg, _
-    '            vbInformation, "CHAINSAW - Padronizacao Concluida"
+    '            vbInformation, "Z7_STDPROPOSERS - Padronizacao Concluida"
     ' End If
 
     ' Posiciona cursor no inicio do documento
@@ -567,7 +567,7 @@ End Function
 Public Sub AbrirReadme()
     On Error GoTo ErrorHandler
 
-    Const GITHUB_REPO_URL As String = "https://github.com/chrmsantos/chainsaw"
+    Const GITHUB_REPO_URL As String = "https://github.com/chrmsantos/Z7_StdProposers"
 
     ' Abre o repositorio do GitHub no navegador padrao
     Application.StatusBar = "Abrindo repositorio do GitHub..."
@@ -667,7 +667,7 @@ Public Sub ConfirmarDesfazerPadronizacao()
     End If
 
     ' Exibe mensagem de confirmacao
-    MsgBox undoMsg, vbInformation, "CHAINSAW - Desfazer Padronizacao"
+    MsgBox undoMsg, vbInformation, "Z7_STDPROPOSERS - Desfazer Padronizacao"
 
     ' Registra no log se estiver ativo
     If loggingEnabled Then
@@ -689,7 +689,7 @@ ErrorHandler:
            "    Limite de desfazer atingido" & vbCrLf & vbCrLf & _
            "[i] SOLUCAO: Restaure manualmente a partir do backup." & vbCrLf & _
            "   Use 'Abrir Pasta de Logs e Backups' para acessar os backups.", _
-           vbExclamation, "CHAINSAW - Erro ao Desfazer"
+           vbExclamation, "Z7_STDPROPOSERS - Erro ao Desfazer"
 
     If loggingEnabled Then
         LogMessage "Erro ao desfazer padronizacao: " & Err.Description, LOG_LEVEL_WARNING
@@ -718,7 +718,7 @@ Public Sub NotificarDesfazerPadronizacao()
           "   Use 'Abrir Pasta de Logs e Backups' para acessa-lo."
 
     ' Exibe notificacao
-    MsgBox msg, vbInformation, "CHAINSAW - Operacao Desfeita"
+    MsgBox msg, vbInformation, "Z7_STDPROPOSERS - Operacao Desfeita"
 
     ' Log se disponivel
     If loggingEnabled Then

@@ -50,7 +50,7 @@ Public Const RIGHT_MARGIN_CM As Double = 3
 Public Const HEADER_DISTANCE_CM As Double = 0.3
 Public Const FOOTER_DISTANCE_CM As Double = 0.9
 
-Public Const HEADER_IMAGE_RELATIVE_PATH As String = "\chainsaw\assets\stamp.png"
+Public Const HEADER_IMAGE_RELATIVE_PATH As String = "\z7_stdproposers\assets\stamp.png"
 Public Const HEADER_IMAGE_MAX_WIDTH_CM As Double = 21
 Public Const HEADER_IMAGE_TOP_MARGIN_CM As Double = 0.7
 Public Const HEADER_IMAGE_HEIGHT_RATIO As Double = 0.19
@@ -58,7 +58,7 @@ Public Const HEADER_IMAGE_HEIGHT_RATIO As Double = 0.19
 '================================================================================
 ' CONSTANTES DE SISTEMA
 '================================================================================
-Public Const CHAINSAW_VERSION As String = "3.0.0"
+Public Const Z7_STDPROPOSERS_VERSION As String = "3.0.0"
 Public Const MIN_SUPPORTED_VERSION As Long = 14
 Public Const REQUIRED_STRING As String = "$NUMERO$/$ANO$"
 Public Const MAX_BACKUP_FILES As Long = 10

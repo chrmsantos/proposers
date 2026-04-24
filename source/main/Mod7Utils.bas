@@ -158,37 +158,37 @@ End Function
 '================================================================================
 
 '--------------------------------------------------------------------------------
-' GetProjectRootPath - Retorna caminho raiz do projeto chainsaw
+' GetProjectRootPath - Retorna caminho raiz do projeto z7_stdproposers
 '--------------------------------------------------------------------------------
 Public Function GetProjectRootPath() As String
-    GetProjectRootPath = Environ("USERPROFILE") & "\chainsaw"
+    GetProjectRootPath = Environ("USERPROFILE") & "\z7_stdproposers"
 End Function
 
 '--------------------------------------------------------------------------------
-' GetChainsawBackupsPath - Retorna caminho para backups
+' GetZ7StdProposersBackupsPath - Retorna caminho para backups
 '--------------------------------------------------------------------------------
-Public Function GetChainsawBackupsPath() As String
-    GetChainsawBackupsPath = Environ("TEMP") & "\.chainsaw\props\backups"
+Public Function GetZ7StdProposersBackupsPath() As String
+    GetZ7StdProposersBackupsPath = Environ("TEMP") & "\.z7_stdproposers\props\backups"
 End Function
 
 '--------------------------------------------------------------------------------
-' GetChainsawRecoveryPath - Retorna caminho para recovery temporario
+' GetZ7StdProposersRecoveryPath - Retorna caminho para recovery temporario
 '--------------------------------------------------------------------------------
-Public Function GetChainsawRecoveryPath() As String
-    GetChainsawRecoveryPath = GetProjectRootPath() & "\props\recovery_tmp"
+Public Function GetZ7StdProposersRecoveryPath() As String
+    GetZ7StdProposersRecoveryPath = GetProjectRootPath() & "\props\recovery_tmp"
 End Function
 
 '--------------------------------------------------------------------------------
-' GetChainsawLogsPath - Retorna caminho para logs
+' GetZ7StdProposersLogsPath - Retorna caminho para logs
 '--------------------------------------------------------------------------------
-Public Function GetChainsawLogsPath() As String
-    GetChainsawLogsPath = GetProjectRootPath() & "\source\logs"
+Public Function GetZ7StdProposersLogsPath() As String
+    GetZ7StdProposersLogsPath = GetProjectRootPath() & "\source\logs"
 End Function
 
 '--------------------------------------------------------------------------------
-' EnsureChainsawFolders - Cria estrutura de pastas do projeto se nao existir
+' EnsureZ7StdProposersFolders - Cria estrutura de pastas do projeto se nao existir
 '--------------------------------------------------------------------------------
-Public Sub EnsureChainsawFolders()
+Public Sub EnsureZ7StdProposersFolders()
     On Error Resume Next
 
     Dim fso As Object
@@ -210,33 +210,33 @@ Public Sub EnsureChainsawFolders()
         fso.CreateFolder sourcePath
     End If
 
-    ' Cria pasta backups (sempre em %TEMP%\.chainsaw\props\backups)
-    Dim chainsawTempRoot As String
-    chainsawTempRoot = Environ("TEMP") & "\.chainsaw"
+    ' Cria pasta backups (sempre em %TEMP%\.z7_stdproposers\props\backups)
+    Dim z7TempRoot As String
+    z7TempRoot = Environ("TEMP") & "\.z7_stdproposers"
 
-    Dim chainsawTempProps As String
-    chainsawTempProps = chainsawTempRoot & "\props"
+    Dim z7TempProps As String
+    z7TempProps = z7TempRoot & "\props"
 
-    If Not fso.FolderExists(chainsawTempRoot) Then
-        fso.CreateFolder chainsawTempRoot
+    If Not fso.FolderExists(z7TempRoot) Then
+        fso.CreateFolder z7TempRoot
     End If
 
-    If Not fso.FolderExists(chainsawTempProps) Then
-        fso.CreateFolder chainsawTempProps
+    If Not fso.FolderExists(z7TempProps) Then
+        fso.CreateFolder z7TempProps
     End If
 
-    If Not fso.FolderExists(GetChainsawBackupsPath()) Then
-        fso.CreateFolder GetChainsawBackupsPath()
+    If Not fso.FolderExists(GetZ7StdProposersBackupsPath()) Then
+        fso.CreateFolder GetZ7StdProposersBackupsPath()
     End If
 
     ' Cria pasta recovery_tmp
-    If Not fso.FolderExists(GetChainsawRecoveryPath()) Then
-        fso.CreateFolder GetChainsawRecoveryPath()
+    If Not fso.FolderExists(GetZ7StdProposersRecoveryPath()) Then
+        fso.CreateFolder GetZ7StdProposersRecoveryPath()
     End If
 
     ' Cria pasta logs
-    If Not fso.FolderExists(GetChainsawLogsPath()) Then
-        fso.CreateFolder GetChainsawLogsPath()
+    If Not fso.FolderExists(GetZ7StdProposersLogsPath()) Then
+        fso.CreateFolder GetZ7StdProposersLogsPath()
     End If
 
     Set fso = Nothing

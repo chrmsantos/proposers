@@ -1,8 +1,8 @@
-# Chainsaw 🪚
+# Z7_StdProposers
 
 **Sistema de Padronização de Proposituras Legislativas**
 
-Chainsaw is an advanced, robust VBA macro project designed exclusively for Microsoft Word. It automatically sanitizes, structures, and formats complex Brazilian legislative documents (Proposituras), turning raw, unformatted text into perfectly aligned, standardized legal documents.
+Z7_StdProposers is an advanced, robust VBA macro project designed exclusively for Microsoft Word. It automatically sanitizes, structures, and formats complex Brazilian legislative documents (Proposituras), turning raw, unformatted text into perfectly aligned, standardized legal documents.
 
 ## ✨ Features
 
@@ -33,7 +33,7 @@ The project has been scaled into 7 robust, interoperable VBA modules located ins
 3. Import the 7 `.bas` files found in the `source/main/` folder into your `Normal.dotm` or dedicated Document Template.
 4. Go to `Debug -> Compile Project` to ensure your Word environment resolves the inter-module Public references.
 5. Create a Ribbon Button or Quick Access Toolbar shortcut pointing to the `PadronizarDocumentoMain` macro.
-6. Click the macro while editing a document to execute the Chainsaw standardized pipeline!
+6. Click the macro while editing a document to execute the Z7_StdProposers standardized pipeline!
 
 ## 📜 License
 

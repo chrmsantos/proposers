@@ -1,5 +1,5 @@
 # =============================================================================
-# CHAINSAW - Encoding Validator Helper
+# Z7_STDPROPOSERS - Encoding Validator Helper
 # =============================================================================
 # Funcoes auxiliares para validacao de encoding em arquivos
 # =============================================================================

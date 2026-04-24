@@ -10,7 +10,7 @@ function Get-RepoRoot {
     return $repoRoot
 }
 
-Describe 'CHAINSAW - Testes de Integridade' {
+Describe 'Z7_STDPROPOSERS - Testes de Integridade' {
 
     Context 'PowerShell scripts syntax' {
         $scripts = Get-PowerShellScripts

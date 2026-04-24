@@ -810,7 +810,7 @@ Public Function ValidateProposituraType(doc As Document) As Boolean
               "Nao parece ser uma propositura de Indicacao, Requerimento ou Mocao," & vbCrLf & _
               "ou ha algum erro de grafia na primeira palavra do titulo." & vbCrLf & vbCrLf & _
               "Deseja prosseguir com o processamento mesmo assim?"
-    userResponse = MsgBox(msgTipo, vbYesNo + vbQuestion, "CHAINSAW - Tipo de Propositura")
+    userResponse = MsgBox(msgTipo, vbYesNo + vbQuestion, "Z7_STDPROPOSERS - Tipo de Propositura")
 
     If userResponse = vbYes Then
         LogMessage "Usuario optou por prosseguir com tipo nao reconhecido: " & firstWord, LOG_LEVEL_WARNING

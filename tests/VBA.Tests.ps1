@@ -123,7 +123,7 @@ function Get-VbaDoLoopBlocks {
     return $blocks
 }
 
-Describe 'CHAINSAW - Testes do Modulo VBA Modulo1.bas' {
+Describe 'Z7_STDPROPOSERS - Testes do Modulo VBA Modulo1.bas' {
 
     BeforeAll {
         $script:repoRoot = Get-RepoRoot
@@ -147,8 +147,8 @@ Describe 'CHAINSAW - Testes do Modulo VBA Modulo1.bas' {
             $sizeMB -lt 5 | Should Be $true
         }
 
-        It 'Contem cabecalho CHAINSAW' {
-            $script:vbaContent -match 'CHAINSAW' | Should Be $true
+        It 'Contem cabecalho Z7_STDPROPOSERS' {
+            $script:vbaContent -match 'Z7_STDPROPOSERS' | Should Be $true
         }
 
         It 'Contem informacoes de versao' {
@@ -260,9 +260,9 @@ Describe 'CHAINSAW - Testes do Modulo VBA Modulo1.bas' {
             ($script:vbaContent -match 'MAX_RETRY_ATTEMPTS') | Should Be $true
         }
 
-        It 'Define constantes de backup e logs (GetChainsawBackupsPath, GetChainsawRecoveryPath)' {
-            ($script:vbaContent -match 'GetChainsawBackupsPath') -and
-            ($script:vbaContent -match 'GetChainsawRecoveryPath') | Should Be $true
+        It 'Define constantes de backup e logs (GetZ7StdProposersBackupsPath, GetZ7StdProposersRecoveryPath)' {
+            ($script:vbaContent -match 'GetZ7StdProposersBackupsPath') -and
+            ($script:vbaContent -match 'GetZ7StdProposersRecoveryPath') | Should Be $true
         }
 
         It 'Define niveis de log (LOG_LEVEL_INFO, LOG_LEVEL_WARNING, LOG_LEVEL_ERROR)' {
@@ -605,7 +605,7 @@ It 'Taxa de comentarios adequada (> 5% das linhas)' {
         }
     }
 
-    Context 'Funcionalidades Especificas do Chainsaw' {
+    Context 'Funcionalidades Especificas do Z7_StdProposers' {
 
         It 'Processa "considerando" corretamente (CONSIDERANDO_PREFIX)' {
             $script:vbaContent -match 'CONSIDERANDO_PREFIX' | Should Be $true
@@ -619,7 +619,7 @@ It 'Taxa de comentarios adequada (> 5% das linhas)' {
             $script:vbaContent -match 'stamp\.png' | Should Be $true
         }
 
-        It 'Usa estrutura .chainsaw para organizacao' {
+        It 'Usa estrutura .z7_stdproposers para organizacao' {
             $script:vbaContent -match '\\props\\' | Should Be $true
         }
     }

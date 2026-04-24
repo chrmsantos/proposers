@@ -31,7 +31,7 @@ Public Sub ShowUserFriendlyError(errNum As Long, errDesc As String)
                   "Verifique o log."
     End Select
 
-    MsgBox msg, vbCritical, "Chainsaw Proposituras v1.0-beta1"
+    MsgBox msg, vbCritical, "Z7_StdProposers v1.0-beta1"
 End Sub
 
 '================================================================================
@@ -207,10 +207,10 @@ Public Function EnsureBackupDirectory(doc As Document) As String
     Set fso = CreateObject("Scripting.FileSystemObject")
 
     ' Garante que a estrutura de pastas do projeto existe
-    EnsureChainsawFolders
+    EnsureZ7StdProposersFolders
 
-    ' SEMPRE USA %TEMP%\.chainsaw\props\backups para todos os documentos
-    backupPath = GetChainsawBackupsPath()
+    ' SEMPRE USA %TEMP%\.z7_stdproposers\props\backups para todos os documentos
+    backupPath = GetZ7StdProposersBackupsPath()
 
     ' Cria o diretorio se nao existir
     If Not fso.FolderExists(backupPath) Then
@@ -367,7 +367,7 @@ Public Function GetRemoteVersion() As String
     GetRemoteVersion = ""
 
     ' URL do arquivo VERSION no GitHub
-    url = "https://raw.githubusercontent.com/chrmsantos/chainsaw/main/VERSION"
+    url = "https://raw.githubusercontent.com/chrmsantos/Z7_StdProposers/main/VERSION"
 
     ' Cria objeto HTTP com timeout quando possivel (evita travamentos em rede lenta/bloqueada)
     On Error Resume Next
@@ -386,7 +386,7 @@ Public Function GetRemoteVersion() As String
 
     ' Alguns MSXML podem falhar no header User-Agent; nao e critico
     On Error Resume Next
-    http.setRequestHeader "User-Agent", "CHAINSAW/" & CHAINSAW_VERSION
+    http.setRequestHeader "User-Agent", "Z7_STDPROPOSERS/" & Z7_STDPROPOSERS_VERSION
     If usedServerHttp Then
         http.setTimeouts 5000, 5000, 10000, 10000
     End If
@@ -553,7 +553,7 @@ Public Sub PromptForUpdate()
 
     If undoGroupEnabled Then
         MsgBox "A verificacao de atualizacao nao pode ser executada durante a padronizacao." & vbCrLf & _
-               "Aguarde a conclusao e tente novamente.", vbExclamation, "CHAINSAW - Atualizacao"
+               "Aguarde a conclusao e tente novamente.", vbExclamation, "Z7_STDPROPOSERS - Atualizacao"
         Exit Sub
     End If
 
@@ -561,20 +561,20 @@ Public Sub PromptForUpdate()
     updateAvailable = CheckForUpdates()
 
     If Not updateAvailable Then
-        MsgBox "Seu sistema CHAINSAW esta atualizado!", vbInformation, "CHAINSAW - Verificacao de Versao"
+        MsgBox "Seu sistema Z7_STDPROPOSERS esta atualizado!", vbInformation, "Z7_STDPROPOSERS - Verificacao de Versao"
         Exit Sub
     End If
 
     ' Pergunta ao usuario se deseja atualizar
     Dim msgUpdate As String
-    msgUpdate = "Uma nova versao do CHAINSAW esta disponivel!" & vbCrLf & vbCrLf & _
+    msgUpdate = "Uma nova versao do Z7_STDPROPOSERS esta disponivel!" & vbCrLf & vbCrLf & _
                 "Deseja atualizar agora?" & vbCrLf & vbCrLf & _
                 "O instalador sera executado e o Word sera fechado."
-    response = MsgBox(msgUpdate, vbYesNo + vbQuestion, "CHAINSAW - Atualizacao Disponivel")
+    response = MsgBox(msgUpdate, vbYesNo + vbQuestion, "Z7_STDPROPOSERS - Atualizacao Disponivel")
 
     If response = vbYes Then
         ' Caminho do instalador
-        installerPath = Environ("USERPROFILE") & "\chainsaw\chainsaw_installer.cmd"
+        installerPath = Environ("USERPROFILE") & "\z7_stdproposers\z7_stdproposers_installer.cmd"
 
         ' Verifica se o instalador existe
         Dim fso As Object
@@ -595,18 +595,18 @@ Public Sub PromptForUpdate()
             ' Executa instalador e fecha o Word
             CreateObject("WScript.Shell").Run shellCmd, 1, False
 
-            MsgBox "O instalador sera executado. O Word sera fechado agora.", vbInformation, "CHAINSAW - Atualizacao"
+            MsgBox "O instalador sera executado. O Word sera fechado agora.", vbInformation, "Z7_STDPROPOSERS - Atualizacao"
             Application.Quit SaveChanges:=wdSaveChanges
         Else
             MsgBox "Instalador nao encontrado em:" & vbCrLf & installerPath & vbCrLf & vbCrLf & _
-                   "Baixe manualmente de: https://github.com/chrmsantos/chainsaw", _
-                   vbExclamation, "CHAINSAW - Erro"
+                   "Baixe manualmente de: https://github.com/chrmsantos/Z7_StdProposers", _
+                   vbExclamation, "Z7_STDPROPOSERS - Erro"
         End If
     End If
 
     Exit Sub
 
 ErrorHandler:
-    MsgBox "Erro ao processar atualizacao: " & Err.Description, vbCritical, "CHAINSAW - Erro"
+    MsgBox "Erro ao processar atualizacao: " & Err.Description, vbCritical, "Z7_STDPROPOSERS - Erro"
 End Sub
 

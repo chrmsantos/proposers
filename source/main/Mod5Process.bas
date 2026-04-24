@@ -2,7 +2,7 @@
 Option Explicit
 
 ' =============================================================================
-' CHAINSAW - Sistema de Padronizacao de Proposituras Legislativas
+' Z7_STDPROPOSERS - Sistema de Padronizacao de Proposituras Legislativas
 ' =============================================================================
 ' Versao: 3.0.0
 ' Data: 2026-01-12
@@ -66,8 +66,8 @@ Option Explicit
 '                - SafeSetParagraphFormat, SafeFindReplace
 '
 ' [MOD.PATH]     FUNCOES DE CAMINHO ................................. ~L1818
-'                - GetProjectRootPath, GetChainsawBackupsPath
-'                - GetChainsawLogsPath, EnsureChainsawFolders
+'                - GetProjectRootPath, GetZ7StdProposersBackupsPath
+'                - GetZ7StdProposersLogsPath, EnsureZ7StdProposersFolders
 '
 ' [MOD.LOG]      SISTEMA DE LOGS .................................... ~L1907
 '                - InitializeLogging, LogMessage, FlushLogBuffer
@@ -219,7 +219,7 @@ ErrorHandler:
     Dim msg As String
     msg = "Erro em 'concluir': " & Err.Description
     On Error Resume Next
-    MsgBox msg, vbCritical, "CHAINSAW - Erro"
+    MsgBox msg, vbCritical, "Z7_STDPROPOSERS - Erro"
 End Sub
 
 Public Function SaveDocumentSafely(doc As Document) As Boolean
@@ -598,10 +598,10 @@ Public Function InitializeLogging(doc As Document) As Boolean
     Set fso = CreateObject("Scripting.FileSystemObject")
 
     ' Garante que a estrutura de pastas do projeto existe
-    EnsureChainsawFolders
+    EnsureZ7StdProposersFolders
 
     ' SEMPRE USA source\logs para todos os documentos
-    logFolder = GetChainsawLogsPath() & "\"
+    logFolder = GetZ7StdProposersLogsPath() & "\"
 
     ' Garante que a pasta de logs existe antes de criar o arquivo
     If Not fso.FolderExists(logFolder) Then
@@ -624,7 +624,7 @@ Public Function InitializeLogging(doc As Document) As Boolean
     docNameClean = SanitizeFileName(docNameClean)
 
     ' Define nome do arquivo de log com timestamp
-    logFilePath = logFolder & "chainsaw_" & Format(Now, "yyyymmdd_HHmmss") & "_" & docNameClean & ".log"
+    logFilePath = logFolder & "z7_stdproposers_" & Format(Now, "yyyymmdd_HHmmss") & "_" & docNameClean & ".log"
 
     ' Inicializa contadores e controles
     errorCount = 0
@@ -638,7 +638,7 @@ Public Function InitializeLogging(doc As Document) As Boolean
     ' Cria arquivo de log com informacoes de contexto usando UTF-8
     Dim headerText As String
     headerText = String(80, "=") & vbCrLf
-    headerText = headerText & "CHAINSAW - LOG DE PROCESSAMENTO DE DOCUMENTO" & vbCrLf
+    headerText = headerText & "Z7_STDPROPOSERS - LOG DE PROCESSAMENTO DE DOCUMENTO" & vbCrLf
     headerText = headerText & String(80, "=") & vbCrLf & vbCrLf
     headerText = headerText & "[SESSAO]" & vbCrLf
     headerText = headerText & "  Inicio: " & Format(Now, "dd/mm/yyyy HH:mm:ss") & vbCrLf
@@ -660,14 +660,14 @@ Public Function InitializeLogging(doc As Document) As Boolean
     headerText = headerText & "[CONFIGURACAO]" & vbCrLf
     headerText = headerText & "  Debug: " & IIf(DEBUG_MODE, "Ativado", "Desativado") & vbCrLf
     headerText = headerText & "  Log: " & logFilePath & vbCrLf
-    headerText = headerText & "  Backup: " & GetChainsawBackupsPath() & "\" & vbCrLf & vbCrLf
+    headerText = headerText & "  Backup: " & GetZ7StdProposersBackupsPath() & "\" & vbCrLf & vbCrLf
     headerText = headerText & String(80, "=") & vbCrLf & vbCrLf
 
     ' Escreve cabecalho em UTF-8
     WriteTextUTF8 logFilePath, headerText, False
 
     ' Enforces log retention limit for this routine
-    EnforceLogRetention logFolder, "chainsaw_", 5
+    EnforceLogRetention logFolder, "z7_stdproposers_", 5
 
     loggingEnabled = True
     InitializeLogging = True
@@ -5405,7 +5405,7 @@ Public Sub RestaurarBackup()
     Set doc = ActiveDocument
 
     If doc Is Nothing Then
-        MsgBox "Nenhum documento ativo para restaurar.", vbExclamation, "CHAINSAW - Restaurar Backup"
+        MsgBox "Nenhum documento ativo para restaurar.", vbExclamation, "Z7_STDPROPOSERS - Restaurar Backup"
         Exit Sub
     End If
 
@@ -5413,7 +5413,7 @@ Public Sub RestaurarBackup()
     If backupFilePath = "" Or Not CreateObject("Scripting.FileSystemObject").FileExists(backupFilePath) Then
         MsgBox "Nenhum backup disponivel para este documento." & vbCrLf & vbCrLf & _
                "[i] O backup e criado apenas apos a primeira execucao de PadronizarDocumentoMain.", _
-               vbExclamation, "CHAINSAW - Restaurar Backup"
+               vbExclamation, "Z7_STDPROPOSERS - Restaurar Backup"
         Exit Sub
     End If
 
@@ -5424,7 +5424,7 @@ Public Sub RestaurarBackup()
                  "[DIR] Documento atual: " & doc.Name & vbCrLf & _
                  "[DIR] Backup: " & CreateObject("Scripting.FileSystemObject").GetFileName(backupFilePath)
 
-    If MsgBox(confirmMsg, vbYesNo + vbQuestion, "CHAINSAW - Confirmar Restauracao") <> vbYes Then
+    If MsgBox(confirmMsg, vbYesNo + vbQuestion, "Z7_STDPROPOSERS - Confirmar Restauracao") <> vbYes Then
         Exit Sub
     End If
 
@@ -5475,7 +5475,7 @@ Public Sub RestaurarBackup()
     ' Abre o backup restaurado
     Application.Documents.Open originalPath
 
-    Application.StatusBar = "Backup restaurado com sucesso! (chainsaw)"
+    Application.StatusBar = "Backup restaurado com sucesso! (z7_stdproposers)"
 
     ' Mensagem de conclusao desativada - informacoes exibidas apenas na StatusBar
     ' MsgBox "[OK] Backup restaurado com sucesso!" & vbCrLf & vbCrLf & _
@@ -5483,7 +5483,7 @@ Public Sub RestaurarBackup()
     '        "   " & discardedPath & vbCrLf & vbCrLf & _
     '        "[DIR] Backup restaurado:" & vbCrLf & _
     '        "   " & originalPath, _
-    '        vbInformation, "CHAINSAW - Backup Restaurado"
+    '        vbInformation, "Z7_STDPROPOSERS - Backup Restaurado"
 
     Exit Sub
 
@@ -5493,7 +5493,7 @@ ErrorHandler:
            Err.Description & vbCrLf & vbCrLf & _
            "[i] O documento pode estar em estado inconsistente." & vbCrLf & _
            "   Verifique manualmente a pasta de backups.", _
-           vbCritical, "CHAINSAW - Erro na Restauracao"
+           vbCritical, "Z7_STDPROPOSERS - Erro na Restauracao"
 End Sub
 
 '================================================================================
@@ -6653,7 +6653,7 @@ End Sub
 
 '================================================================================
 ' Sub: ExecutarInstalador
-' Descricao: Executa o chainsaw_installer.cmd a partir da interface do Word
+' Descricao: Executa o z7_stdproposers_installer.cmd a partir da interface do Word
 ' Uso: Pode ser chamado de um botao na ribbon ou atalho de teclado
 '================================================================================
 Public Sub ExecutarInstalador()
@@ -6666,28 +6666,28 @@ Public Sub ExecutarInstalador()
 
     ' Pergunta confirmacao ao usuario
     Dim msgInstaller As String
-    msgInstaller = "Deseja executar o instalador do CHAINSAW?" & vbCrLf & vbCrLf & _
+    msgInstaller = "Deseja executar o instalador do Z7_STDPROPOSERS?" & vbCrLf & vbCrLf & _
                    "Isso ira:" & vbCrLf & _
                    " Baixar a versao mais recente do GitHub" & vbCrLf & _
                    " Instalar/atualizar o sistema" & vbCrLf & _
                    " Fechar o Word ao final da instalacao" & vbCrLf & vbCrLf & _
                    "Continuar?"
-    response = MsgBox(msgInstaller, vbYesNo + vbQuestion, "CHAINSAW - Executar Instalador")
+    response = MsgBox(msgInstaller, vbYesNo + vbQuestion, "Z7_STDPROPOSERS - Executar Instalador")
 
     If response <> vbYes Then
         Exit Sub
     End If
 
     ' Caminho do instalador
-    installerPath = Environ("USERPROFILE") & "\chainsaw\chainsaw_installer.cmd"
+    installerPath = Environ("USERPROFILE") & "\z7_stdproposers\z7_stdproposers_installer.cmd"
 
     ' Verifica se o instalador existe
     Set fso = CreateObject("Scripting.FileSystemObject")
 
     If Not fso.FileExists(installerPath) Then
         MsgBox "Instalador nao encontrado em:" & vbCrLf & installerPath & vbCrLf & vbCrLf & _
-               "Baixe manualmente de: https://github.com/chrmsantos/chainsaw/raw/main/chainsaw_installer.cmd", _
-               vbExclamation, "CHAINSAW - Instalador Nao Encontrado"
+               "Baixe manualmente de: https://github.com/chrmsantos/Z7_StdProposers/raw/main/z7_stdproposers_installer.cmd", _
+               vbExclamation, "Z7_STDPROPOSERS - Instalador Nao Encontrado"
         Exit Sub
     End If
 
@@ -6708,7 +6708,7 @@ Public Sub ExecutarInstalador()
     ' Mensagem informativa
     MsgBox "O instalador foi iniciado em uma nova janela." & vbCrLf & vbCrLf & _
            "O Word sera fechado ao final da instalacao.", _
-           vbInformation, "CHAINSAW - Instalador Iniciado"
+           vbInformation, "Z7_STDPROPOSERS - Instalador Iniciado"
 
     ' Fecha o Word apos 2 segundos (tempo para o instalador iniciar)
     Application.OnTime Now + TimeValue("00:00:02"), "FecharWord"
@@ -6716,7 +6716,7 @@ Public Sub ExecutarInstalador()
     Exit Sub
 
 ErrorHandler:
-    MsgBox "Erro ao executar instalador: " & Err.Description, vbCritical, "CHAINSAW - Erro"
+    MsgBox "Erro ao executar instalador: " & Err.Description, vbCritical, "Z7_STDPROPOSERS - Erro"
     LogMessage "Erro ao executar instalador: " & Err.Description, LOG_LEVEL_ERROR
 End Sub
 

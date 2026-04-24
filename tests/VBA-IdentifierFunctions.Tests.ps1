@@ -10,7 +10,7 @@
     Este teste e critico para garantir estabilidade durante a migracao gradual do codigo.
 
 .NOTES
-    Autor: Sistema Chainsaw
+    Autor: Sistema Z7_StdProposers
     Data: 2025-11-08
     Versao: 1.0.0
     Teste critico de estabilidade

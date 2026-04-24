@@ -1,6 +1,6 @@
 @echo off
 REM ================================================================
-REM CHAINSAW - Executar Testes Automatizados
+REM Z7_STDPROPOSERS - Executar Testes Automatizados
 REM ================================================================
 REM
 REM Script para executar suite de testes Pester com bypass de ExecutionPolicy
@@ -12,7 +12,7 @@ cd /d "%~dp0"
 
 echo.
 echo ========================================
-echo  CHAINSAW - Testes Automatizados
+echo  Z7_STDPROPOSERS - Testes Automatizados
 echo ========================================
 echo.
 

@@ -1,11 +1,11 @@
-# CHAINSAW - AI Assistant Developer Context
+# Z7_STDPROPOSERS - AI Assistant Developer Context
 
-> **Note to AI Agents**: Read this document before attempting to modify or refactor the Chainsaw VBA codebase. This documentation will save you from re-analyzing the structural paradigms and pipeline mechanics of the project.
+> **Note to AI Agents**: Read this document before attempting to modify or refactor the Z7_StdProposers VBA codebase. This documentation will save you from re-analyzing the structural paradigms and pipeline mechanics of the project.
 >
 > **Last updated**: 2026-04-20 — Applied three architectural fixes (stale index pointers, UndoRecord audit, COM overhead). See Section 5.
 
 ## 1. Project Overview
-**Chainsaw** (Sistema de Padronização de Proposituras Legislativas) is an advanced document-formatting macro built for Microsoft Word. It is designed to automatically detect structural components of Brazilian legislative documents (Proposituras) and apply a highly tailored, fault-tolerant standard layout.
+**Z7_StdProposers** (Sistema de Padronização de Proposituras Legislativas) is an advanced document-formatting macro built for Microsoft Word. It is designed to automatically detect structural components of Brazilian legislative documents (Proposituras) and apply a highly tailored, fault-tolerant standard layout.
 
 ## 2. Codebase Architecture (VBA)
 Historically a massive ~12,000-line monolithic `Proposers.bas` file, the codebase has been aggressively refactored into **7 logical modules** inside `source/main/` to comply with strict scaling requirements and ease of maintenance:
@@ -21,7 +21,7 @@ Historically a massive ~12,000-line monolithic `Proposers.bas` file, the codebas
 ## 3. Structural Conventions and Nuances
 
 ### A. The Double-Pass Pipeline Concept
-Chainsaw formats documents using an optimized two-pass approach to ensure layout stability:
+Z7_StdProposers formats documents using an optimized two-pass approach to ensure layout stability:
 1. **Pass 1**: Normalizes characters and removes raw text debris. It establishes the baseline flow. If Pass 1 successfully flags `documentDirty = True`, it will trigger Pass 2.
 2. **Pass 2**: Injects complex alignments (like the Ementa indents or Header images).
 
@@ -34,7 +34,7 @@ Because legislative documents are rarely well-formed natively, the system parses
 ### C. Resource Protection & Safe Handlers
 Never trust Microsoft Word's COM architecture to execute cleanly under pressure.
 - **Image Protection System**: Found in `ModMedia`. Due to formatting resets blowing out images, images are essentially copied/cached and re-injected post-format.
-- **UndoGroups (CustomRecord)**: Chainsaw wraps executions in `Application.UndoRecord.StartCustomRecord`. All exit paths — including `CriticalErrorHandler → EmergencyRecovery → GoTo CleanUp` and every explicit `GoTo CleanUp` — converge at the single `CleanUp:` label in `ModProcess.bas`, which calls `EndCustomRecord` guarded by `On Error Resume Next`. This guarantees the native Undo stack is never permanently broken even during fatal crashes.
+- **UndoGroups (CustomRecord)**: Z7_StdProposers wraps executions in `Application.UndoRecord.StartCustomRecord`. All exit paths — including `CriticalErrorHandler → EmergencyRecovery → GoTo CleanUp` and every explicit `GoTo CleanUp` — converge at the single `CleanUp:` label in `ModProcess.bas`, which calls `EndCustomRecord` guarded by `On Error Resume Next`. This guarantees the native Undo stack is never permanently broken even during fatal crashes.
 - **Error Recovery (`EmergencyRecovery`)**: If an unhandled exception surfaces, this subroutine triggers a safe shutdown (reverting View states, enabling screen updating, dropping COM objects) to ensure MS Word doesn't freeze or lock up.
 
 ### D. Scoping Strategy

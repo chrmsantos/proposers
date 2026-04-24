@@ -1,12 +1,12 @@
 # =============================================================================
-# CHAINSAW - Testes de Encoding e Emojis
+# Z7_STDPROPOSERS - Testes de Encoding e Emojis
 # =============================================================================
 # Verifica conformidade de encoding (UTF-8/ASCII) e ausencia de emojis
 # =============================================================================
 
 $ErrorActionPreference = "Stop"
 
-Describe 'CHAINSAW - Testes de Encoding e Emojis' {
+Describe 'Z7_STDPROPOSERS - Testes de Encoding e Emojis' {
 
     $projectRoot = Split-Path -Parent $PSScriptRoot
     $testsPath = Join-Path $projectRoot 'tests'
